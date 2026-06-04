@@ -2,7 +2,7 @@
 
 This document tracks the **testing** effort for the Book App. The original
 [`ReadMe.md`](ReadMe.md) (app setup) is unchanged. We build the test suite
-**incrementally, one lab session at a time** — small first, then up the pyramid.
+**incrementally**.
 
 > Benchmarking is **not** covered here. It gets its own guide (`README3.md`) in a
 > later lab once the functional suite is in place. See *Roadmap* at the bottom.
