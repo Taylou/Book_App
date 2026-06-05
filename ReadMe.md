@@ -183,7 +183,8 @@ Standalone script invoked via `python seed.py`. Uses `requests` to hit Open Libr
 ### Step 11 — Run & verify
 
 Commands the user runs (in order):
-
+# Generate a real secret and paste into .env's FLASK_SECRET_KEY
+python -c "import secrets;print(secrets.token_hex(32))"
 ```bash
 # 1. Start Postgres
 docker compose up -d

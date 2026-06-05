@@ -1,0 +1,4 @@
+# Test dependencies (Lab 1+). Benchmarking deps come in a later lab.
+-r requirements.txt
+pytest==9.0.3
+pytest-playwright==0.8.0

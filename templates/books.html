@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Books{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-5">Book Collection</h1>
+
+<div class="mb-4">
+    <input type="text" id="search" class="form-control" placeholder="Search by title or author...">
+</div>
+
+<div class="row" id="books-list">
+    {% for book in books %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 book-card">
+            <img src="{{ book.cover or 'https://via.placeholder.com/200x300?text=No+Cover' }}"
+                 class="card-img-top book-cover"
+                 alt="{{ book.title }} cover"
+                 onerror="this.src='https://via.placeholder.com/200x300?text=No+Cover'">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ book.title }}</h5>
+                <p class="card-text text-muted author-line">
+                    by {{ book.author_names() | join(', ') if book.author_names() else "Unknown Author" }}
+                </p>
+                <p class="card-text">{{ book.synopsis or "" }}</p>
+                {% if current_user.is_authenticated %}
+                <div class="mt-auto d-flex gap-2">
+                    <a href="{{ url_for('books.edit_book', book_id=book.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <form method="POST" action="{{ url_for('books.delete_book', book_id=book.id) }}"
+                          onsubmit="return confirm('Delete &quot;{{ book.title }}&quot;?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <p class="text-center text-muted">No books yet. {% if current_user.is_authenticated %}
+        <a href="{{ url_for('books.new_book') }}">Add the first one</a>.
+    {% else %}
+        <a href="{{ url_for('auth.login') }}">Log in</a> to add one.
+    {% endif %}</p>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('search').addEventListener('input', function() {
+        const term = this.value.toLowerCase();
+        document.querySelectorAll('.book-card').forEach(card => {
+            const title = card.querySelector('.card-title').textContent.toLowerCase();
+            const author = card.querySelector('.author-line').textContent.toLowerCase();
+            card.closest('.col-md-4').style.display =
+                (title.includes(term) || author.includes(term)) ? '' : 'none';
+        });
+    });
+</script>
+{% endblock %}
