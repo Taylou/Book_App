@@ -7,9 +7,11 @@ Requires Postgres running and a `bookapp_test` database:
 """
 import os
 import threading
+import uuid
 
 import pytest
 from dotenv import load_dotenv
+from playwright.sync_api import Page, expect
 from werkzeug.serving import make_server
 
 from app import create_app
@@ -77,3 +79,21 @@ def live_server():
 def base_url(live_server):
     """Override pytest-playwright's base_url so page.goto('/') hits the app."""
     return live_server
+
+
+@pytest.fixture
+def logged_in_page(page: Page) -> Page:
+    """Register a uniquely-named user via the UI and return the logged-in page.
+
+    A fresh account per test keeps tests independent against the session-scoped
+    database (registration rejects duplicate username/email).
+    """
+    username = f"crud_{uuid.uuid4().hex[:8]}"
+    page.goto("/auth/register", wait_until="domcontentloaded")
+    page.get_by_label("Username").fill(username)
+    page.get_by_label("Email").fill(f"{username}@example.com")
+    page.get_by_label("Password", exact=True).fill("secret123")
+    page.get_by_label("Confirm password").fill("secret123")
+    page.get_by_role("button", name="Register").click()
+    expect(page.get_by_text(f"Hi, {username}")).to_be_visible()
+    return page

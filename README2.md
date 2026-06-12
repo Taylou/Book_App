@@ -4,8 +4,9 @@ This document tracks the **testing** effort for the Book App. The original
 [`ReadMe.md`](ReadMe.md) (app setup) is unchanged. We build the test suite
 **incrementally**.
 
-> Benchmarking is **not** covered here. It gets its own guide (`README3.md`) in a
-> later lab once the functional suite is in place. See *Roadmap* at the bottom.
+> Labs 2 & 3 are documented in the continuation guide **[`README3.md`](README3.md)**.
+> Benchmarking is **not** covered in this series — it gets its own future guide
+> (`README4.md`). See *Roadmap* at the bottom.
 
 ---
 
@@ -30,10 +31,10 @@ This document tracks the **testing** effort for the Book App. The original
 
 - [x] **Lab 1** — Foundation + first E2E
       (`create_app(test_config)`, dev deps, `pytest.ini`, conftest fixtures, smoke + auth-flow)
-- [ ] **Lab 2** — E2E: book CRUD / client-side search / auth-gating
-- [ ] **Lab 3** — Backend: models / auth routes / book routes
+- [x] **Lab 2** — E2E: book CRUD / client-side search / auth-gating → see [README3.md](README3.md)
+- [x] **Lab 3** — Backend: models / auth routes / book routes → see [README3.md](README3.md)
 - [ ] **Lab 4** — API: HTTP-contract + CSRF enforcement
-- [ ] **Later** — Benchmarking → moves to its own `README3.md` (not in this series)
+- [ ] **Later** — Benchmarking → moves to its own `README4.md` (not in this series)
 
 ---
 
@@ -82,9 +83,9 @@ tests/
     conftest.py          # live_server on Postgres, base_url for Playwright
     test_smoke.py        # Lab 1 — home loads, seeded books render
     test_auth_flow.py    # Lab 1 — register / logout / bad-login
-    test_book_crud.py    # Lab 2 (todo)
-    test_search.py       # Lab 2 (todo)
-  backend/               # Lab 3 (todo)
+    test_book_crud.py    # Lab 2 (done — README3)
+    test_search.py       # Lab 2 (done — README3)
+  backend/               # Lab 3 (done — README3)
   api/                   # Lab 4 (todo)
 ```
 
@@ -110,9 +111,9 @@ tests/
 | Lab | Focus | DB | Status |
 |-----|-------|----|--------|
 | 1 | Foundation + first E2E | Postgres | ✅ done |
-| 2 | E2E: CRUD, search, auth-gating | Postgres | ⬜ |
-| 3 | Backend: models, routes, validation | SQLite | ⬜ |
+| 2 | E2E: CRUD, search, auth-gating | Postgres | ✅ done (README3) |
+| 3 | Backend: models, routes, validation | SQLite | ✅ done (README3) |
 | 4 | API: HTTP-contract, CSRF | SQLite | ⬜ |
-| — | Benchmarking (`README3.md`) | both | ⬜ later |
+| — | Benchmarking (`README4.md`) | both | ⬜ later |
 
 *To be continued.*

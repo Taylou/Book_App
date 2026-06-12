@@ -4,15 +4,23 @@ These run against an in-memory SQLite database — no Docker required. The E2E
 layer has its own conftest (tests/e2e/conftest.py) that uses real Postgres.
 """
 import pytest
+from sqlalchemy.pool import StaticPool
 
 from app import create_app
 from models import Author, Book, User, db
 
 TEST_CONFIG = {
     "TESTING": True,
-    "SECRET_KEY": "test-secret",
+    "SECRET_KEY": "5dec1f49940bd28f389fc47407b82151f7b54f834ef1dbed80b0edb1de3ef98a",
     "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
     "WTF_CSRF_ENABLED": False,
+    # Keep a single shared connection so the in-memory DB created by the
+    # factories is visible to the test client (the standard SQLite-:memory:
+    # testing pattern — without this each connection gets its own empty DB).
+    "SQLALCHEMY_ENGINE_OPTIONS": {
+        "connect_args": {"check_same_thread": False},
+        "poolclass": StaticPool,
+    },
 }
 
 
@@ -29,6 +37,15 @@ def app():
 @pytest.fixture
 def client(app):
     return app.test_client()
+
+
+@pytest.fixture
+def auth_client(app, make_user):
+    """A test client with a logged-in user (CSRF is disabled in TEST_CONFIG)."""
+    make_user(username="tester", email="tester@example.com", password="secret123")
+    client = app.test_client()
+    client.post("/auth/login", data={"email": "tester@example.com", "password": "secret123"})
+    return client
 
 
 @pytest.fixture
